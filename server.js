@@ -3,6 +3,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const bodyParser = require('body-parser'); // Optional if using express.json()
+require('dotenv').config();
 
 const app = express();
 app.use('/uploads', express.static('public/uploads'));
