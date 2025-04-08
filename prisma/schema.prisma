@@ -23,6 +23,7 @@ model User {
   otp            String    @default("") // field to store otp
   otpExpires     DateTime?
   Cart           Cart[]
+  Order          Order[]
 }
 
 model Product {
@@ -47,6 +48,18 @@ model Cart {
   product   Product @relation(fields: [productId], references: [id])
 }
 
+model Order {
+  id          Int      @id @default(autoincrement())
+  userId      Int
+  user        User     @relation(fields: [userId], references: [id])
+  totalAmount Float
+  status      String   @default("pending") // pending, processing, shipped, delivered, cancelled
+  paymentId   String? // For payment gateway reference
+  address     String // Shipping address
+  phone       String // Contact phone
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
 
 model blackListedToken {
   id        Int      @id @default(autoincrement())

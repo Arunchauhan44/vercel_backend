@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Confirmation</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .order-details {
+      list-style-type: none;
+      padding: 0;
+    }
+    .order-details li {
+      margin-bottom: 20px;
+    }
+    .order-details img {
+      width: 100%;
+      max-width: 200px;
+      display: block;
+    }
+
+    .container {
+
+      margin: 0 auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      background-color: #85b1d1;
+
+    }
+  </style>
+</head>
+<body>
+  <div class="container"> 
+
+  <h1>Order Confirmation</h1>
+  <p>Your order has been placed successfully. Total amount: $<%= totalAmount %></p>
+  <h2>Order Details:</h2>
+  <ul class="order-details">
+    <% cartItems.forEach(item => { %>
+      <li>
+        <h3><%= item.product.name %></h3>
+        <p>Price: $<%= item.product.price %></p>
+        <p>Quantity: <%= item.quantity %></p>
+        <!-- <img 
+          src="<%= item.product.image ? `http://localhost:5100${item.product.image}` : 'http://localhost:5100/uploads/default-image.jpg' %>" 
+          alt="<%= item.product.name %>"> -->
+      </li>
+    <% }) %>
+  </ul>
+  <p>Thank you for shopping with us!</p>
+</div>
+</body>
+</html>
+
+

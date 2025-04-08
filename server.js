@@ -14,7 +14,8 @@ app.use(express.urlencoded({ extended: true }));
 // app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 const PORT = process.env.PORT || 5000;
 
-
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
 
 // Routes
 const userRoutes = require('./routes/user');
@@ -23,10 +24,21 @@ const productRoutes = require('./routes/product');
 app.use('/product', productRoutes);
 const cartRoutes = require('./routes/cart');
 app.use('/cart', cartRoutes);
+const orderRoutes = require('./routes/order');
+app.use('/order', orderRoutes);
 
 app.get('/', (req, res) => {
     res.send("welcome to the backend server");
 });
+
+app.get('/ejs', (req, res) => {
+    res.render("index.ejs");
+});
+
+// Serve static files
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

@@ -6,20 +6,20 @@ require('dotenv').config();
 const verifyBearerToken = async (req, res, next) => {
   try {
     const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-     console.log("authHeader", authHeader);
+    //  console.log("authHeader", authHeader);
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return res.status(401).json({ status: "error", message: 'Authentication failed. Bearer token required.' });
     }
 
     const token = authHeader.split(' ')[1];
-    console.log("Token:", token);
+    // console.log("Token:", token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    console.log("Decoded Token:", decoded);
+    // console.log("Decoded Token:", decoded);
 
     const blacklistedToken = await prisma.blackListedToken.findFirst({ where: { token } });
-    console.log("Blacklisted Token:", blacklistedToken);
+    // console.log("Blacklisted Token:", blacklistedToken);
     if (blacklistedToken) {
       return res.status(401).json({ status: "error", message: 'Authentication failed. Token invalid..' });
     }
@@ -30,7 +30,7 @@ const verifyBearerToken = async (req, res, next) => {
         id: decoded.id,
       },
     });
-    console.log("User Found:", user);
+    // console.log("User Found:", user);
 
     if (!user) {
       return res.status(401).json({ status: "error", message: 'Authentication failed. User not found.' });

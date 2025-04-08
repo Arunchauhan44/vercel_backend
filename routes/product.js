@@ -3,7 +3,7 @@ const routerP = express.Router();
 const multer = require('multer');
 const path = require('path');
 const auth = require('../middleware/auth');
-const {createProduct, product, productId, deleteproduct} = require('../controllers/product');
+const {createProduct, product, productId, deleteproduct, updateProduct} = require('../controllers/product');
 
 // Multer configuration for file uploads
 const storage = multer.diskStorage({
@@ -21,7 +21,9 @@ const upload = multer({ storage: storage });
 // Routes
 routerP.post('/create', auth, upload.single("image"), createProduct);
 
-routerP.get('/product-list', product);
+routerP.put('/update/:id', auth, upload.single("image"), updateProduct);
+
+routerP.get('/product-list', auth, product);
 
 routerP.get('/products/:id', auth, productId);
 

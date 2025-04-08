@@ -66,13 +66,13 @@ const loginUser = async (req, res) => {
 
     // if user does not exist , send a response and stop execution
     if (!user) {
-      res.json({ message: "User does'nt exists, please SignUp first!" });
+      return res.json({ message: "User does'nt exists, please SignUp first!" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      res.status(400).send({ status: "false", message: "invalid password" });
+      return res.status(400).send({ status: "false", message: "invalid password" });
     }
 
     const tokenPayload = {
@@ -82,17 +82,16 @@ const loginUser = async (req, res) => {
       email: user.email,
     };
 
-    //const token = jwt.sign(tokenPayload, secretKey, { expiresIn: "365d" });
-
+    // Generate JWT token
     const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "365d"});
 
     return res.json({ message: "Login successfully", user, token });
   } catch (error) {
     console.log("error found:", error);
-
-    res.status(500).json({ message: "Internal server error" });
+    return res.status(500).json({ message: "Internal server error" });
   }
 };
+
 
 // forget password
 const forgetPassword = async (req, res) => {
@@ -104,7 +103,6 @@ const forgetPassword = async (req, res) => {
   // if (role !== "admin") {
   //   return res.status(401).json({ message: "Unauthorised" });
   // }
-
   try {
     // Find the user by email
     const user = await prisma.user.findFirst({
@@ -241,25 +239,25 @@ const deleteUser = async (req, res) => {
         id: parseInt(id),
       },
     });
-    res.json({ message: "User deleted successfully", user });
+    return res.json({ message: "User deleted successfully", user });
   } catch (error) {
     console.error("Error deleting user:", error);
 
-    res.status(500).json({ error: "Internal Server Error" });
+   return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
-const logoutUser = async (req, res) => {
-  try {
-    // Clear the token from the client-side
-    return res.status(200).json({ message: "Logout successful" });
-  } catch (error) {
-    console.error("Error in logoutUser:", error);
-    return res
-      .status(500)
-      .json({ message: "An error occurred while logging out" });
-  }
-};
+// const logoutUser = async (req, res) => {
+//   try {
+//     // Clear the token from the client-side
+//     return res.status(200).json({ message: "Logout successful" });
+//   } catch (error) {
+//     console.error("Error in logoutUser:", error);
+//     return res
+//       .status(500)
+//       .json({ message: "An error occurred while logging out" });
+//   }
+// };
 
 
 
@@ -294,10 +292,10 @@ const Logout = async (req, res) => {
       },
     });
 
-    res.status(200).json({ message: "Logged out successfully." });
+    return res.status(200).json({ message: "Logged out successfully." });
   } catch (error) {
     console.error("Error during logout:", error);
-    res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
