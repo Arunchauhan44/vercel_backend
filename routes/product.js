@@ -23,7 +23,7 @@ routerP.post('/create', auth, upload.single("image"), createProduct);
 
 routerP.put('/update/:id', auth, upload.single("image"), updateProduct);
 
-routerP.get('/product-list', auth, product);
+routerP.get('/product-list', product);
 
 routerP.get('/products/:id', auth, productId);
 

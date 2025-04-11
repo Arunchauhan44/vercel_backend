@@ -14,29 +14,31 @@ datasource db {
 }
 
 model User {
-  id             Int       @id @default(autoincrement())
-  name           String    @default("")
-  email          String    @unique // Mark email as unique
-  password       String    @default("")
-  confirmPasword String    @default("")
-  role           String    @default("user") // user, admin
-  otp            String    @default("") // field to store otp
+  id             Int        @id @default(autoincrement())
+  name           String     @default("")
+  email          String     @unique // Mark email as unique
+  password       String     @default("")
+  confirmPasword String     @default("")
+  role           String     @default("user") // user, admin
+  otp            String     @default("") // field to store otp
   otpExpires     DateTime?
   Cart           Cart[]
   Order          Order[]
+  wishlist       wishlist[]
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id          Int        @id @default(autoincrement())
   name        String
   description String
   price       Float
   stock       Int
-  image       String?  @default("")
+  image       String?    @default("")
   category    String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
   Cart        Cart[]
+  wishlist    wishlist[]
 }
 
 model Cart {
@@ -59,6 +61,16 @@ model Order {
   phone       String // Contact phone
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+}
+
+model wishlist {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  productId Int
+  user      User     @relation(fields: [userId], references: [id])
+  product   Product  @relation(fields: [productId], references: [id])
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 }
 
 model blackListedToken {

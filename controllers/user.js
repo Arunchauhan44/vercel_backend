@@ -54,7 +54,107 @@ const registerUser = async (req, res) => {
   }
 };
 
+
+// This function Api is working for user registration and sending OTP to the user email
+
+// const registerUser = async (req, res) => {
+//   const { name, email, password, confirmPassword, role } = req.body;
+
+//   try {
+//     // Validation schema
+//     const userSchema = joi.object({
+//       name: joi.string().trim().required(),
+//       email: joi.string().email().trim().required(),
+//       password: joi.string().min(6).required(),
+//       confirmPassword: joi
+//         .string()
+//         .valid(joi.ref("password"))
+//         .required()
+//         .messages({ "any.only": "Passwords do not match" }),
+//       role: joi.string().valid("user", "admin").default("user"),
+//     });
+
+//     // Validate input
+//     const { error } = userSchema.validate(req.body);
+//     if (error) {
+//       return res.status(400).json({ error: error.details[0].message });
+//     }
+
+//     // Check if user exists
+//     const existingUser = await prisma.user.findUnique({ where: { email } });
+//     if (existingUser) {
+//       return res
+//         .status(409)
+//         .json({ message: "User already exists, please login" });
+//     }
+
+//     // Generate secure OTP
+//     const otp = crypto.randomInt(100000, 999999).toString();
+//     const otpExpires = new Date(Date.now() + 15 * 60 * 1000); // 15 minutes
+
+//     // Hash password
+//     const hashedPassword = await bcrypt.hash(password, 10);
+
+//     // Create user
+//     const user = await prisma.user.create({
+//       data: {
+//         name,
+//         email,
+//         password: hashedPassword,
+//         role: role || "user",
+//         confirmPassword,
+//         otp,
+//         otpExpires,
+//       },
+//     });
+
+//     // Send OTP email
+//     const transporter = nodemailer.createTransport({
+//       service: "gmail",
+//       auth: {
+//         user: process.env.EMAIL_USER,
+//         pass: process.env.EMAIL_PASS,
+//       },
+//     });
+
+//     const mailOptions = {
+//       from: process.env.EMAIL_USER,
+//       to: email,
+//       subject: "User Registration OTP",
+//       html: `
+//         <h1>User Registration</h1>
+//         <p>Dear ${user.name},</p>
+//         <img src="https://example.com/otp-image.jpg" alt="OTP Image" style="width: 100%; max-width: 600px;">
+//         <p>Your OTP for registration is: <strong>${otp}</strong></p>
+//         <p>This OTP will expire in 15 minutes.</p>
+//       `,
+//     };
+
+//     await transporter.sendMail(mailOptions);
+
+//     return res.status(201).json({
+//       message: "User created successfully.  OTP sent for verification.",
+//       user: {
+//         id: user.id,
+//         name: user.name,
+//         email: user.email,
+//         role: user.role,
+//       },
+//     });
+//   } catch (error) {
+//     console.error("Registration error:", error);
+//     return res.status(500).json({
+//       error: "Internal server error",
+//       details:
+//         process.env.NODE_ENV === "development" ? error.message : undefined,
+//     });
+//   }
+// };
+
+
 // login user
+
+
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -72,7 +172,9 @@ const loginUser = async (req, res) => {
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (!passwordMatch) {
-      return res.status(400).send({ status: "false", message: "invalid password" });
+      return res
+        .status(400)
+        .send({ status: "false", message: "invalid password" });
     }
 
     const tokenPayload = {
@@ -83,7 +185,9 @@ const loginUser = async (req, res) => {
     };
 
     // Generate JWT token
-    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {expiresIn: "365d"});
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET, {
+      expiresIn: "365d",
+    });
 
     return res.json({ message: "Login successfully", user, token });
   } catch (error) {
@@ -92,17 +196,9 @@ const loginUser = async (req, res) => {
   }
 };
 
-
 // forget password
 const forgetPassword = async (req, res) => {
   const { email } = req.body;
-
-  // const token = req.header("Authorisation");
-  // const decoded = jwt.verify(token, process.env.JWT_SECRET);
-  // const role = decoded.role;
-  // if (role !== "admin") {
-  //   return res.status(401).json({ message: "Unauthorised" });
-  // }
   try {
     // Find the user by email
     const user = await prisma.user.findFirst({
@@ -210,8 +306,6 @@ const resetPassword = async (req, res) => {
   }
 };
 
-
-
 // getAllUsers by admin
 const getallUser = async (req, res) => {
   const token = req.header("Authorisation");
@@ -243,7 +337,7 @@ const deleteUser = async (req, res) => {
   } catch (error) {
     console.error("Error deleting user:", error);
 
-   return res.status(500).json({ error: "Internal Server Error" });
+    return res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
@@ -258,8 +352,6 @@ const deleteUser = async (req, res) => {
 //       .json({ message: "An error occurred while logging out" });
 //   }
 // };
-
-
 
 // const Logout = async (req, res) => {
 //   try {
@@ -278,12 +370,12 @@ const deleteUser = async (req, res) => {
 //       .status(500)
 //       .json({ status: "error", message: "Failed to log out" });
 //   }
-// }; 
+// };
 
 const Logout = async (req, res) => {
   try {
     // Extract the token from the Authorization header
-    const token = req.headers['authorization'].split(' ')[1];
+    const token = req.headers["authorization"].split(" ")[1];
 
     // Add the token to the blackListedToken table
     await prisma.blackListedToken.create({
@@ -298,7 +390,6 @@ const Logout = async (req, res) => {
     return res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
 
 module.exports = {
   registerUser,

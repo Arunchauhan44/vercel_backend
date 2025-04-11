@@ -11,11 +11,13 @@ app.use('/uploads', express.static('public/uploads'));
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+
 const PORT = process.env.PORT || 5000;
 
 app.set("view engine", "ejs");
 app.set("views", path.join(__dirname, "views"));
+app.use('/assets', express.static('assets'));
 
 // Routes
 const userRoutes = require('./routes/user');
@@ -26,17 +28,15 @@ const cartRoutes = require('./routes/cart');
 app.use('/cart', cartRoutes);
 const orderRoutes = require('./routes/order');
 app.use('/order', orderRoutes);
+const wishlistRoutes = require('./routes/wishlist');
+app.use('/wishlist', wishlistRoutes);
+const frontendRoutes = require('./routes/frontend');
+app.use(frontendRoutes);
 
-app.get('/', (req, res) => {
-    res.send("welcome to the backend server");
-});
 
-app.get('/ejs', (req, res) => {
-    res.render("index.ejs");
-});
-
-// Serve static files
-app.use('/uploads', express.static(path.join(__dirname, 'public/uploads')));
+// app.get('/product', (req, res) => {
+//     res.render("product.ejs", { activePage: 'product' });
+// })
 
 
 

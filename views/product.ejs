@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+  </head>
+  <body>
+    <div class="min-h-full bg-green-400">
+      <%- include('navbar.ejs') %>
+
+      <div>
+        <h1 class="text-3xl font-bold mt-[20px] text-center">All Products</h1>
+
+        <div
+          class="flex flex-wrap gap-7 border p-[3px] place-content-start  min-h-full mt-10  ml-[50px] mr-[50px]"
+        >
+          <% products.forEach(product => { %>
+            <div class="border w-[330px] p-4 rounded shadow hover:shadow-lg">
+              <img
+                class="w-full h-58 object-cover rounded"
+                src="<%= product.imageUrl %>" <!-- Use the correct field from your API -->
+                alt="Product Image"
+              />
+              <div class="px-6 py-4">
+                <div class="font-bold text-xl mb-2"><%= product.name %></div>
+                <p class="text-gray-700 text-base"><%= product.description %></p>
+                <p class="text-gray-700 text-base">Price: $<%= product.price %></p>
+                <p class="text-gray-700 text-base">Stocks: <%= product.stocks %></p>
+              </div>
+            </div>
+          <% }) %>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
